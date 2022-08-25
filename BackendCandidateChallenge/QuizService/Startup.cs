@@ -8,6 +8,8 @@ using Microsoft.Data.Sqlite;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using QuizService.Factories;
+using QuizService.Repositories;
 
 namespace QuizService;
 
@@ -26,6 +28,14 @@ public class Startup
         services.AddMvc();
         services.AddSingleton(InitializeDb());
         services.AddControllers();
+        
+        //Repositories
+        services.AddSingleton<IQuizRepository, QuizRepository>();
+        services.AddSingleton<IQuestionRepository, QuestionRepository>();
+        services.AddSingleton<IAnswerRepository, AnswerRepository>();
+        
+        //Factories
+        services.AddSingleton<IQuizResponseModelFactory, QuizResponseModelFactory>();
     }
 
     // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

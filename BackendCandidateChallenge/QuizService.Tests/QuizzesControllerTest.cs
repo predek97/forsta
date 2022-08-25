@@ -63,7 +63,6 @@ public class QuizzesControllerTest
     }
 
     [Fact]
-        
     public async Task AQuizDoesNotExists_WhenPostingAQuestion_ReturnsNotFound()
     {
         const string QuizApiEndPoint = "/api/quizzes/999/questions";
