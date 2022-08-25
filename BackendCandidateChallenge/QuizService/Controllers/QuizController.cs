@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using QuizService.Model;
 using QuizService.Model.Domain;
 using System.Linq;
+using Microsoft.Data.Sqlite;
 
 namespace QuizService.Controllers;
 
@@ -37,7 +38,7 @@ public class QuizController : Controller
     public object Get(int id)
     {
         const string quizSql = "SELECT * FROM Quiz WHERE Id = @Id;";
-        var quiz = _connection.QuerySingle<Quiz>(quizSql, new {Id = id});
+        var quiz = _connection.QuerySingleOrDefault<Quiz>(quizSql, new {Id = id});
         if (quiz == null)
             return NotFound();
         const string questionsSql = "SELECT * FROM Question WHERE QuizId = @QuizId;";
@@ -112,8 +113,15 @@ public class QuizController : Controller
     public IActionResult PostQuestion(int id, [FromBody]QuestionCreateModel value)
     {
         const string sql = "INSERT INTO Question (Text, QuizId) VALUES(@Text, @QuizId); SELECT LAST_INSERT_ROWID();";
-        var questionId = _connection.ExecuteScalar(sql, new {Text = value.Text, QuizId = id});
-        return Created($"/api/quizzes/{id}/questions/{questionId}", null);
+        try
+        {
+            var questionId = _connection.ExecuteScalar(sql, new {Text = value.Text, QuizId = id});
+            return Created($"/api/quizzes/{id}/questions/{questionId}", null);
+        }
+        catch (SqliteException ex)
+        {
+            return NotFound();
+        }
     }
 
     // PUT api/quizzes/5/questions/6
