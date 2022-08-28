@@ -6,4 +6,5 @@ namespace QuizService.Repositories;
 public interface IQuestionRepository
 {
     IEnumerable<Question> GetQuestions(int quizId);
+    Question GetQuestion(int questionId);
 }

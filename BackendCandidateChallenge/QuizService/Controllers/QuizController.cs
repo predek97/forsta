@@ -8,6 +8,7 @@ using System.Linq;
 using Microsoft.Data.Sqlite;
 using QuizService.Factories;
 using QuizService.Repositories;
+using QuizService.Services;
 
 namespace QuizService.Controllers;
 
@@ -19,16 +20,18 @@ public class QuizController : Controller
     private readonly IQuestionRepository _questionRepository;
     private readonly IAnswerRepository _answerRepository;
     private readonly IQuizGetModelFactory _quizGetModelFactory;
+    private readonly ISolveQuizService _solveQuizService;
 
     public QuizController(IDbConnection connection, IQuizRepository quizRepository,
         IQuestionRepository questionRepository, IAnswerRepository answerRepository,
-        IQuizGetModelFactory quizGetModelFactory)
+        IQuizGetModelFactory quizGetModelFactory, ISolveQuizService solveQuizService)
     {
         _connection = connection;
         _quizRepository = quizRepository;
         _questionRepository = questionRepository;
         _answerRepository = answerRepository;
         _quizGetModelFactory = quizGetModelFactory;
+        _solveQuizService = solveQuizService;
     }
 
     // GET api/quizzes
@@ -99,7 +102,7 @@ public class QuizController : Controller
             var questionId = _connection.ExecuteScalar(sql, new {Text = value.Text, QuizId = id});
             return Created($"/api/quizzes/{id}/questions/{questionId}", null);
         }
-        catch (SqliteException _)
+        catch (SqliteException)
         {
             return NotFound();
         }
@@ -155,5 +158,16 @@ public class QuizController : Controller
         const string sql = "DELETE FROM Answer WHERE Id = @AnswerId";
         _connection.ExecuteScalar(sql, new {AnswerId = aid});
         return NoContent();
+    }
+    
+    // POST api/quizzes/5/responses
+    [HttpPost]
+    [Route("{id}/responses")]
+    public IActionResult PostResponse([FromBody]QuizResponseModel value)
+    {
+        return Accepted(new QuizResultModel
+            {
+                Score = _solveQuizService.EvaluateAttempt(value)
+            });
     }
 }

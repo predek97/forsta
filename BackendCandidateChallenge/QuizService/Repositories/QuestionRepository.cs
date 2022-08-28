@@ -20,4 +20,10 @@ public class QuestionRepository : IQuestionRepository
         const string questionsSql = "SELECT * FROM Question WHERE QuizId = @QuizId;";
         return _connection.Query<Question>(questionsSql, new {QuizId = quizId});
     }
+
+    public Question GetQuestion(int questionId)
+    {
+        const string questionsSql = "SELECT * FROM Question WHERE Id = @QuestionId;";
+        return _connection.QuerySingleOrDefault<Question>(questionsSql, new {QuestionId = questionId});
+    }
 }

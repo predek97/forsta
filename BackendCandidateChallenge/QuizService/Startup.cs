@@ -11,6 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using QuizService.Factories;
 using QuizService.Repositories;
+using QuizService.Services;
 
 namespace QuizService;
 
@@ -29,6 +30,9 @@ public class Startup
         services.AddMvc();
         services.AddSingleton(InitializeDb());
         services.AddControllers();
+        
+        //Services
+        services.AddSingleton<ISolveQuizService, SolveQuizService>();
         
         //Repositories
         services.AddSingleton<IQuizRepository, QuizRepository>();
