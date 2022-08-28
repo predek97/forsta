@@ -27,9 +27,16 @@ public class QuizzesControllerTest
     public async Task PostNewQuizAddsQuiz()
     {
         var quiz = new QuizCreateModel("Test title");
+        
+        //TODO I would consider creating a separate method for creating those tests host to make it a bit drier. If we 
+        //ever need to change the way it is created(as I did in the last test) then we have a single point to change
         using (var testHost = new TestServer(new WebHostBuilder()
                    .UseStartup<Startup>()))
         {
+            //TODO tests are much more readable if they follow a clear arrange-act-assert pattern
+            
+            //TODO It would be worth considering to create a separate method for  all that code responsible for serializing and sending the request
+            //to the service. The closer more abstract DSL used in the tests themselves is, the better.
             var client = testHost.CreateClient();
             var content = new StringContent(JsonConvert.SerializeObject(quiz));
             content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
@@ -73,12 +80,15 @@ public class QuizzesControllerTest
     [Fact]
     public async Task AQuizDoesNotExists_WhenPostingAQuestion_ReturnsNotFound()
     {
+        //TODO not only is it bad hide consts behind local variables, but also that variable should be defined as a 
+        //concatenation of the const we already have. It's not DRY
         const string QuizApiEndPoint = "/api/quizzes/999/questions";
 
         using (var testHost = new TestServer(new WebHostBuilder()
                    .UseStartup<Startup>()))
         {
             var client = testHost.CreateClient();
+            //TODO that const is not used. I suppose it was meant to be used in URI in line 96
             const long quizId = 999;
             var question = new QuestionCreateModel("The answer to everything is what?");
             var content = new StringContent(JsonConvert.SerializeObject(question));

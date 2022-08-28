@@ -64,6 +64,7 @@ public class QuizController : Controller
     [HttpPost]
     public IActionResult Post([FromBody]QuizCreateModel value)
     {
+        //TODO controller should not access database directly. Applies to all methods in this class
         var sql = $"INSERT INTO Quiz (Title) VALUES('{value.Title}'); SELECT LAST_INSERT_ROWID();";
         var id = _connection.ExecuteScalar(sql);
         return Created($"/api/quizzes/{id}", null);

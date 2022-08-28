@@ -28,6 +28,7 @@ public class QuizClient
         var response = await _httpClient.SendAsync(request, cancellationToken);
         return response.StatusCode == HttpStatusCode.OK ?
             new Response<IEnumerable<Quiz>>(response.StatusCode, await ReadAndDeserializeAsync<IEnumerable<Quiz>>(response)) :
+            //TODO I strongly prefer to use Array.Empty. Makes for more readable code that communicates clearly that it's not a typo
             new Response<IEnumerable<Quiz>>(response.StatusCode, new Quiz[0], await ReadErrorAsync(response));
     }
 
