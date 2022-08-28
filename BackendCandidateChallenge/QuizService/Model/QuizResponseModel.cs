@@ -1,25 +1,13 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace QuizService.Model;
 
 public class QuizResponseModel
 {
-    public class AnswerItem
+    public QuizResponseModel(Dictionary<int, int> answers)
     {
-        public int Id { get; set; }
-        public string Text { get; set; }
+        this.answers = answers;
     }
 
-    public class QuestionItem
-    {
-        public int Id { get; set; }
-        public string Text { get; set; }
-        public IEnumerable<AnswerItem> Answers { get; set; }
-        public int CorrectAnswerId { get; set; }
-    }
-
-    public long Id { get; set; }
-    public string Title { get; set; }
-    public IEnumerable<QuestionItem> Questions { get; set; }
-    public IDictionary<string, string> Links { get; set; }
+    public Dictionary<int, int> answers { get; }
 }

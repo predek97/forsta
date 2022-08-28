@@ -1,4 +1,5 @@
-﻿using System.Data;
+﻿using System;
+using System.Data;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -35,7 +36,7 @@ public class Startup
         services.AddSingleton<IAnswerRepository, AnswerRepository>();
         
         //Factories
-        services.AddSingleton<IQuizResponseModelFactory, QuizResponseModelFactory>();
+        services.AddSingleton<IQuizGetModelFactory, QuizGetModelFactory>();
     }
 
     // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -56,11 +57,12 @@ public class Startup
     {
         var connection = new SqliteConnection("Data Source=:memory:");
         connection.Open();
+        var shouldLoadTestData = Convert.ToBoolean(Configuration["ShouldLoadTestData"]);
 
         // Migrate up
         var assembly = typeof(Startup).GetTypeInfo().Assembly;
         var migrationResourceNames = assembly.GetManifestResourceNames()
-            .Where(x => x.EndsWith(".sql"))
+            .Where(x => x.EndsWith(".sql") && (!x.EndsWith("test.sql") || shouldLoadTestData))
             .OrderBy(x => x);
         if (!migrationResourceNames.Any()) throw new System.Exception("No migration files found!");
         foreach (var resourceName in migrationResourceNames)

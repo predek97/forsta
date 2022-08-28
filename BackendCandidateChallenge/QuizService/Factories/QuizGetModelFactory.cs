@@ -6,25 +6,25 @@ using QuizService.Model.Domain;
 
 namespace QuizService.Factories;
 
-public class QuizResponseModelFactory : IQuizResponseModelFactory
+public class QuizGetModelFactory : IQuizGetModelFactory
 {
-    public QuizResponseModel CreateQuizResponseModel(Quiz quiz, IEnumerable<Question> questions, IDictionary<int, IList<Answer>> answers)
+    public QuizGetModel CreateQuizGetModel(Quiz quiz, IEnumerable<Question> questions, IDictionary<int, IList<Answer>> answers)
     {
-        return new QuizResponseModel
+        return new QuizGetModel
         {
             Id = quiz.Id,
             Title = quiz.Title,
-            Questions = questions.Select(question => new QuizResponseModel.QuestionItem
+            Questions = questions.Select(question => new QuizGetModel.QuestionItem
             {
                 Id = question.Id,
                 Text = question.Text,
                 Answers = answers.ContainsKey(question.Id)
-                    ? answers[question.Id].Select(answer => new QuizResponseModel.AnswerItem
+                    ? answers[question.Id].Select(answer => new QuizGetModel.AnswerItem
                     {
                         Id = answer.Id,
                         Text = answer.Text
                     })
-                    : Array.Empty<QuizResponseModel.AnswerItem>(),
+                    : Array.Empty<QuizGetModel.AnswerItem>(),
                 CorrectAnswerId = question.CorrectAnswerId
             }),
             Links = new Dictionary<string, string>

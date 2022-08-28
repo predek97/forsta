@@ -18,26 +18,26 @@ public class QuizController : Controller
     private readonly IQuizRepository _quizRepository;
     private readonly IQuestionRepository _questionRepository;
     private readonly IAnswerRepository _answerRepository;
-    private readonly IQuizResponseModelFactory _quizResponseModelFactory;
+    private readonly IQuizGetModelFactory _quizGetModelFactory;
 
     public QuizController(IDbConnection connection, IQuizRepository quizRepository,
         IQuestionRepository questionRepository, IAnswerRepository answerRepository,
-        IQuizResponseModelFactory quizResponseModelFactory)
+        IQuizGetModelFactory quizGetModelFactory)
     {
         _connection = connection;
         _quizRepository = quizRepository;
         _questionRepository = questionRepository;
         _answerRepository = answerRepository;
-        _quizResponseModelFactory = quizResponseModelFactory;
+        _quizGetModelFactory = quizGetModelFactory;
     }
 
     // GET api/quizzes
     [HttpGet]
-    public IEnumerable<QuizResponseModel> Get()
+    public IEnumerable<QuizGetModel> Get()
     {
         var quizzes = _quizRepository.GetQuizzes();
         return quizzes.Select(quiz =>
-            new QuizResponseModel
+            new QuizGetModel
             {
                 Id = quiz.Id,
                 Title = quiz.Title
@@ -54,7 +54,7 @@ public class QuizController : Controller
         
         var questions = _questionRepository.GetQuestions(id);
         var answers = _answerRepository.GetAnswers(id);
-        return _quizResponseModelFactory.CreateQuizResponseModel(quiz, questions, answers);
+        return _quizGetModelFactory.CreateQuizGetModel(quiz, questions, answers);
     }
 
     // POST api/quizzes

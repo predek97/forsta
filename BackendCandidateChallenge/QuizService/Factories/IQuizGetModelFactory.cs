@@ -4,8 +4,8 @@ using QuizService.Model.Domain;
 
 namespace QuizService.Factories;
 
-public interface IQuizResponseModelFactory
+public interface IQuizGetModelFactory
 {
-    QuizResponseModel CreateQuizResponseModel(Quiz quiz, IEnumerable<Question> questions,
+    QuizGetModel CreateQuizGetModel(Quiz quiz, IEnumerable<Question> questions,
         IDictionary<int, IList<Answer>> answers);
 }
